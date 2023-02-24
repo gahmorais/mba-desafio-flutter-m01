@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/routes/AppRoutes.dart';
+import 'package:flutter_project/views/show_imc_data.dart';
 
 import 'views/input_imc_data.dart';
 
@@ -12,7 +14,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: InputImcData(),
+      routes: {
+        AppRoutes.INPUT_DATA: (_) => const InputImcDataStateful(),
+        AppRoutes.SHOW_DATA: (_) => const ShowImcData()
+      },
     );
   }
 }

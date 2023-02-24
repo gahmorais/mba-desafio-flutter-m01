@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/routes/AppRoutes.dart';
 
-class InputImcData extends StatelessWidget {
-  final _form = GlobalKey<FormState>();
+import '../models/Imc.dart';
 
-  InputImcData({super.key});
+class InputImcDataStateful extends StatefulWidget {
+  const InputImcDataStateful({super.key});
 
+  @override
+  State<StatefulWidget> createState() => InputImcData();
+}
+
+class InputImcData extends State<InputImcDataStateful> {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, double> _form = {};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,20 +22,34 @@ class InputImcData extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
-          key: _form,
+          key: _formKey,
           child: Column(children: [
             TextFormField(
               decoration: const InputDecoration(labelText: "Altura (m)"),
-              onSaved: (value) => print(value),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onSaved: (value) {
+                _form['height'] = double.parse(value!);
+              },
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: "Peso (Kg)"),
-              onSaved: (value) => print(value),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onSaved: (value) => {_form['weight'] = double.parse(value!)},
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: (){}, child: const Text("Calcular"))
+                ElevatedButton(
+                    onPressed: () {
+                      _formKey.currentState?.save();
+                      final imc = Imc(
+                          height: _form['height']!, weight: _form['weight']!);
+                      Navigator.of(context)
+                          .pushNamed(AppRoutes.SHOW_DATA, arguments: imc);
+                    },
+                    child: const Text("Mostrar resultado"))
               ],
             )
           ]),
