@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/routes/AppRoutes.dart';
-
-import '../models/Imc.dart';
+import '../models/User.dart';
 
 class InputImcDataStateful extends StatefulWidget {
   const InputImcDataStateful({super.key});
@@ -12,7 +11,7 @@ class InputImcDataStateful extends StatefulWidget {
 
 class InputImcData extends State<InputImcDataStateful> {
   final _formKey = GlobalKey<FormState>();
-  final Map<String, double> _form = {};
+  User user = User(name: "", height: 0.0, weight: 0.0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,18 +24,24 @@ class InputImcData extends State<InputImcDataStateful> {
           key: _formKey,
           child: Column(children: [
             TextFormField(
+              decoration: const InputDecoration(labelText: "Nome"),
+              onSaved: (value) {
+                user.name = value!;
+              },
+            ),
+            TextFormField(
               decoration: const InputDecoration(labelText: "Altura (m)"),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               onSaved: (value) {
-                _form['height'] = double.parse(value!);
+                user.height = double.parse(value!);
               },
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: "Peso (Kg)"),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              onSaved: (value) => {_form['weight'] = double.parse(value!)},
+              onSaved: (value) => {user.weight = double.parse(value!)},
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -44,10 +49,8 @@ class InputImcData extends State<InputImcDataStateful> {
                 ElevatedButton(
                     onPressed: () {
                       _formKey.currentState?.save();
-                      final imc = Imc(
-                          height: _form['height']!, weight: _form['weight']!);
                       Navigator.of(context)
-                          .pushNamed(AppRoutes.SHOW_DATA, arguments: imc);
+                          .pushNamed(AppRoutes.SHOW_DATA, arguments: user);
                     },
                     child: const Text("Mostrar resultado"))
               ],
